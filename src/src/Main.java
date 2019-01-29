@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         MyCalculator calculator = new MyCalculator();
-        StackArrayList<Integer> stack = new StackArrayList<Integer>();
+        StackVector<Integer> stack = new StackVector<Integer>();
         ArrayList operation = new ArrayList();
         int operator = 0;
         int operand = 0;
