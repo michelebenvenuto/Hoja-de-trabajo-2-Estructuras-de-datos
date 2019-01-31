@@ -1,63 +1,141 @@
+
+/*
+
+Main.java
+
+java version 1.8.0_191
+
+01/02/2018
+
+Saul Contreras Godoy
+Michele Benevenuto
+Hoja de trabajo 2
+Algoritmos y estructura de datos
+Main con GUI
+*/
+
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.stream.Stream;
-
-public class Main {
-
-    public static void main(String[] args) {
-        MyCalculator calculator = new MyCalculator();
-        StackVector<Integer> stack = new StackVector<Integer>();
-        ArrayList operation = new ArrayList();
-        int operator = 0;
-        int operand = 0;
-        try {
-            Stream<String> lines = Files.lines(
-                    Paths.get("C:\\Users\\HP\\Desktop\\datos.txt"),
-                    StandardCharsets.UTF_8
-            );
-            lines.forEach(s ->{
-                    operation.add(s);
-            });
-        }catch (IOException exception){
-            System.out.println("Error");
-        }
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.JFormattedTextField;
+import javax.swing.text.MaskFormatter;
 
 
-        String operationToDo= (String) operation.get(0);
-        for (int i =0; i<operationToDo.length();i++){
-            String currentString=operationToDo.substring(i,i+1);
+public class Main extends JFrame implements ActionListener{
 
-            try {
-                int currentNumber = Integer.parseInt(currentString);
-                stack.push(currentNumber);
-            }catch(NumberFormatException nfe){
-                if (!currentString.equals(" ")){
-                    if (currentString.equals("+")){
-                        operand=stack.pop();
-                        operator= stack.pop();
-                        stack.push(calculator.calculate(operand,operator,"+"));
-                    }
-                    else if (currentString.equals("*")){
-                        operand=stack.pop();
-                        operator=stack.pop();
-                        stack.push(calculator.calculate(operand,operator,"*"));
-                    }
-                    else if (currentString.equals("-")){
-                        operator=stack.pop();
-                        operand= stack.pop();
-                        stack.push(calculator.calculate(operand,operator,"-"));
-                    }
-                    else if (currentString.equals("/")){
-                        operator=stack.pop();
-                        operand= stack.pop();
-                        stack.push(calculator.calculate(operand,operator,"/"));
-                    }
-                }
-            }
-        }
-        System.out.println(stack.peek());
+	private JButton empezar = new JButton("Comenzar");;//boton que permitira que se realice la accion
+	private JTextArea mensaje;
+	private Panel panelEntrada, panelCentro;
+	private JPanel panelDeLaVentana;
+
+	public Main(){
+		super("Calculadora");
+		empezar.setActionCommand("empezar");
+		mensaje = new JTextArea();
+		mensaje.setBounds(10,50,400,300);
+		mensaje.setPreferredSize(new Dimension(1000,500));
+		empezar.addActionListener(this);
+		panelDeLaVentana = (JPanel)this.getContentPane();
+		panelEntrada = new Panel();//los siguientes paneles son para poner orden y estetica
+		panelCentro = new Panel();
+		panelEntrada.add(empezar,BoxLayout.X_AXIS);
+		panelCentro.add(mensaje,BoxLayout.X_AXIS);
+		panelDeLaVentana.add(panelEntrada,BorderLayout.NORTH);
+    	panelDeLaVentana.add(panelCentro,BorderLayout.CENTER);
+	}
+
+	public void actionPerformed(ActionEvent e){
+		if("empezar".equals(e.getActionCommand())){
+			MyCalculator calculator = new MyCalculator();
+	        StackVector<Integer> stack = new StackVector<Integer>();
+	        ArrayList<String> operation = new ArrayList<String>();
+	        int operator = 0;
+	        int operand = 0;
+	        try {
+	            Stream<String> lines = Files.lines(
+	                    Paths.get("text.txt"),
+	                    StandardCharsets.UTF_8
+	            );
+	            lines.forEach(s ->{
+	                    operation.add(s);
+	            });
+	        }catch (IOException exception){
+	            System.out.println("Error");
+	        }
+
+	        String anterior = " ";//sera util para guardar la segunda posicion
+	        int contador = 0;//llevara la cuenta de las rondas
+	        String retorno = "\tEntrada \tOperacion \t\t\t\t\t\tPila";
+	        String operationToDo= (String) operation.get(0);
+	        for (int i =0; i<operationToDo.length();i++){
+	        	String currentString=operationToDo.substring(i,i+1);
+	            try {
+	                int currentNumber = Integer.parseInt(currentString);
+	                stack.push(currentNumber);
+	                contador = contador + 1;
+	                retorno=retorno + ("\n\t"+ String.valueOf(contador));
+	                if(anterior==" "){//si solo hay un elemento
+	                	retorno = retorno + "\tpush Operando\t\t\t\t\t\t" + stack.peek();
+	                	anterior = String.valueOf(stack.peek());//lo guardamos en la variable
+	                }
+	                else{
+	                	retorno = retorno + "\tpush Operando\t\t\t\t\t\t" + anterior + "," + stack.peek();
+	                	anterior = " ";
+	                }
+	            }catch(NumberFormatException nfe){
+	                if (!currentString.equals(" ")){
+	                    if (currentString.equals("+")){
+	                        operand=stack.pop();
+	                        operator= stack.pop();
+	                        stack.push(calculator.calculate(operand,operator,"+"));
+	                        retorno = retorno + "\n\t+\tSumar: pop, pop y push del resultado\t\t\t\t"+ stack.peek();
+	                    	anterior = String.valueOf(stack.peek());//lo guardamos en la variable
+	                    }
+	                    else if (currentString.equals("*")){
+	                        operand=stack.pop();
+	                        operator=stack.pop();
+	                        stack.push(calculator.calculate(operand,operator,"*"));
+	                        retorno = retorno + "\n\t*\tMultiplicar: pop, pop y push del resultado\t\t\t\t" + stack.peek();
+	                    	anterior = String.valueOf(stack.peek());//lo guardamos en la variable
+	                    }
+	                    else if (currentString.equals("-")){
+	                        operator=stack.pop();
+	                        operand= stack.pop();
+	                        stack.push(calculator.calculate(operand,operator,"-"));
+	                        retorno = retorno + "\n\t-\tRestar: pop, pop y push del resultado\t\t\t\t"+stack.peek();
+	                    	anterior = String.valueOf(stack.peek());//lo guardamos en la variable
+	                    }
+	                    else if (currentString.equals("/")){
+	                        operator=stack.pop();
+	                        operand= stack.pop();
+	                        stack.push(calculator.calculate(operand,operator,"/"));
+	                        retorno = retorno + "\n\t/\tDividir: pop, pop y push del resultado\t\t\t\t"+stack.peek();
+	                    	anterior = String.valueOf(stack.peek());//lo guardamos en la variable
+	                    }
+	                }
+	            }
+	        }
+	        mensaje.setText(retorno);
+	        System.out.println(retorno);
+		}
+	}
+
+    public static void main(String[] arg){
+    	
+    	/*Imprimimos la ventana en la pantalla*/
+    	
+    	Main miAplicacion = new Main();
+     	miAplicacion.setBounds(10,10,200,200);
+    	miAplicacion.pack();
+    	miAplicacion.setVisible(true);
     }
 }
