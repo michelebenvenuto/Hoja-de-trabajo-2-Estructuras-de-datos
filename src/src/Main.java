@@ -63,7 +63,7 @@ public class Main extends JFrame implements ActionListener{
 	        int operand = 0;
 	        try {//si no es un operando
 	            Stream<String> lines = Files.lines(
-	                    Paths.get("C:\\Users\\HP\\Desktop\\datos.txt"),
+	                    Paths.get("text.txt"),
 	                    StandardCharsets.UTF_8
 	            );
 	            lines.forEach(s ->{
