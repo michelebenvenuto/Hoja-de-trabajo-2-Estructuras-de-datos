@@ -32,24 +32,25 @@ import javax.swing.text.MaskFormatter;
 
 public class Main extends JFrame implements ActionListener{
 
+	/*Definimos los botones*/
 	private JButton empezar = new JButton("Comenzar");;//boton que permitira que se realice la accion
 	private JTextArea mensaje;
 	private Panel panelEntrada, panelCentro;
 	private JPanel panelDeLaVentana;
 
 	public Main(){
-		super("Calculadora");
+		super("Calculadora");/*Sera el nombre de la ventana*/
 		empezar.setActionCommand("empezar");
 		mensaje = new JTextArea();
 		mensaje.setBounds(10,50,400,300);
-		mensaje.setPreferredSize(new Dimension(1000,500));
+		mensaje.setPreferredSize(new Dimension(1000,500));//dimensiones
 		empezar.addActionListener(this);
 		panelDeLaVentana = (JPanel)this.getContentPane();
 		panelEntrada = new Panel();//los siguientes paneles son para poner orden y estetica
 		panelCentro = new Panel();
 		panelEntrada.add(empezar,BoxLayout.X_AXIS);
 		panelCentro.add(mensaje,BoxLayout.X_AXIS);
-		panelDeLaVentana.add(panelEntrada,BorderLayout.NORTH);
+		panelDeLaVentana.add(panelEntrada,BorderLayout.NORTH);//agreamos las ventanas a la interfaz grafica
     	panelDeLaVentana.add(panelCentro,BorderLayout.CENTER);
 	}
 
@@ -60,7 +61,7 @@ public class Main extends JFrame implements ActionListener{
 	        ArrayList<String> operation = new ArrayList<String>();
 	        int operator = 0;
 	        int operand = 0;
-	        try {
+	        try {//si no es un operando
 	            Stream<String> lines = Files.lines(
 	                    Paths.get("text.txt"),
 	                    StandardCharsets.UTF_8
@@ -125,7 +126,6 @@ public class Main extends JFrame implements ActionListener{
 	            }
 	        }
 	        mensaje.setText(retorno);
-	        System.out.println(retorno);
 		}
 	}
 
