@@ -1,8 +1,18 @@
 import java.util.Vector;
 
+/**
+ * A stack based on a vactor
+ * @param <E> the type of objects that the vector will store
+ */
 public class StackVector<E> implements Stack<E> {
+    /**
+     * Stores the itmes inside the stack
+     */
     public Vector<E> data;
 
+    /**
+     * Constructs a new StackVector with an empty vector
+     */
     public StackVector(){data = new Vector<E>();}
 
     @Override

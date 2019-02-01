@@ -1,3 +1,4 @@
+
 /*
 
 Main.java
@@ -21,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.stream.Stream;
 import javax.swing.*;
 import java.awt.*;
@@ -63,7 +63,7 @@ public class Main extends JFrame implements ActionListener{
 	        int operand = 0;
 	        try {//si no es un operando
 	            Stream<String> lines = Files.lines(
-	                    Paths.get("text.txt"),
+	                    Paths.get("C:\\Users\\HP\\Desktop\\datos.txt"),
 	                    StandardCharsets.UTF_8
 	            );
 	            lines.forEach(s ->{

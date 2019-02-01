@@ -1,8 +1,18 @@
 import java.util.ArrayList;
 
+/**
+ * A stack that is based around an ArrayList
+ * @param <E>the type of element that will be stores in hte stack
+ */
 public class StackArrayList<E> implements Stack<E> {
+    /**
+     * Stores the items inside the stack
+     */
     public ArrayList<E> data;
 
+    /**
+     * Constructs a new ArrayList stack with an empty array
+     */
     public StackArrayList(){
         data = new ArrayList<E>();
     }
