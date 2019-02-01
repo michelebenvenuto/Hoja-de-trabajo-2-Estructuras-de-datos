@@ -75,7 +75,11 @@ public class Main extends JFrame implements ActionListener{
 
 	        String anterior = " ";//sera util para guardar la segunda posicion
 	        int contador = 0;//llevara la cuenta de las rondas
-	        String retorno = "\tEntrada \tOperacion \t\t\t\t\t\tPila";
+	        String retorno;
+
+
+	        /*Aca iria el for*/	
+	        retorno = "\n\n\n\tEntrada \tOperacion \t\t\t\t\t\tPila";
 	        String operationToDo= (String) operation.get(0);
 	        for (int i =0; i<operationToDo.length();i++){
 	        	String currentString=operationToDo.substring(i,i+1);
