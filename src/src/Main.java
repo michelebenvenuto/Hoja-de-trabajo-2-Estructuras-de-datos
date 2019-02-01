@@ -34,6 +34,7 @@ public class Main extends JFrame implements ActionListener{
 
 	/*Definimos los botones*/
 	private JButton empezar = new JButton("Comenzar");;//boton que permitira que se realice la accion
+	private JScrollPane scroll;
 	private JTextArea mensaje;
 	private Panel panelEntrada, panelCentro;
 	private JPanel panelDeLaVentana;
@@ -41,15 +42,16 @@ public class Main extends JFrame implements ActionListener{
 	public Main(){
 		super("Calculadora");/*Sera el nombre de la ventana*/
 		empezar.setActionCommand("empezar");
-		mensaje = new JTextArea();
+		mensaje = new JTextArea(50,100);//dimensiones
+		scroll = new JScrollPane(mensaje);
+      	scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		mensaje.setBounds(10,50,400,300);
-		mensaje.setPreferredSize(new Dimension(1000,500));//dimensiones
 		empezar.addActionListener(this);
 		panelDeLaVentana = (JPanel)this.getContentPane();
 		panelEntrada = new Panel();//los siguientes paneles son para poner orden y estetica
 		panelCentro = new Panel();
 		panelEntrada.add(empezar,BoxLayout.X_AXIS);
-		panelCentro.add(mensaje,BoxLayout.X_AXIS);
+		panelCentro.add(scroll);
 		panelDeLaVentana.add(panelEntrada,BorderLayout.NORTH);//agreamos las ventanas a la interfaz grafica
     	panelDeLaVentana.add(panelCentro,BorderLayout.CENTER);
 	}
@@ -66,70 +68,75 @@ public class Main extends JFrame implements ActionListener{
 	                    Paths.get("datos.txt"),
 	                    StandardCharsets.UTF_8
 	            );
-	            lines.forEach(s ->{
+	            lines.forEach(s ->{	
 	                    operation.add(s);
 	            });
 	        }catch (IOException exception){
 	            System.out.println("Error");
 	        }
 
-	        String anterior = " ";//sera util para guardar la segunda posicion
-	        int contador = 0;//llevara la cuenta de las rondas
-	        String retorno;
+	        
+	        String retorno = "";
 
 
-	        /*Aca iria el for*/	
-	        retorno = "\n\n\n\tEntrada \tOperacion \t\t\t\t\t\tPila";
-	        String operationToDo= (String) operation.get(0);
-	        for (int i =0; i<operationToDo.length();i++){
-	        	String currentString=operationToDo.substring(i,i+1);
-	            try {
-	                int currentNumber = Integer.parseInt(currentString);
-	                stack.push(currentNumber);
-	                contador = contador + 1;
-	                retorno=retorno + ("\n\t"+ String.valueOf(contador));
-	                if(anterior==" "){//si solo hay un elemento
-	                	retorno = retorno + "\tpush Operando\t\t\t\t\t\t" + stack.peek();
-	                	anterior = String.valueOf(stack.peek());//lo guardamos en la variable
-	                }
-	                else{
-	                	retorno = retorno + "\tpush Operando\t\t\t\t\t\t" + anterior + "," + stack.peek();
-	                	anterior = " ";
-	                }
-	            }catch(NumberFormatException nfe){
-	                if (!currentString.equals(" ")){
-	                    if (currentString.equals("+")){
-	                        operand=stack.pop();
-	                        operator= stack.pop();
-	                        stack.push(calculator.calculate(operand,operator,"+"));
-	                        retorno = retorno + "\n\t+\tSumar: pop, pop y push del resultado\t\t\t\t"+ stack.peek();
-	                    	anterior = String.valueOf(stack.peek());//lo guardamos en la variable
-	                    }
-	                    else if (currentString.equals("*")){
-	                        operand=stack.pop();
-	                        operator=stack.pop();
-	                        stack.push(calculator.calculate(operand,operator,"*"));
-	                        retorno = retorno + "\n\t*\tMultiplicar: pop, pop y push del resultado\t\t\t\t" + stack.peek();
-	                    	anterior = String.valueOf(stack.peek());//lo guardamos en la variable
-	                    }
-	                    else if (currentString.equals("-")){
-	                        operator=stack.pop();
-	                        operand= stack.pop();
-	                        stack.push(calculator.calculate(operand,operator,"-"));
-	                        retorno = retorno + "\n\t-\tRestar: pop, pop y push del resultado\t\t\t\t"+stack.peek();
-	                    	anterior = String.valueOf(stack.peek());//lo guardamos en la variable
-	                    }
-	                    else if (currentString.equals("/")){
-	                        operator=stack.pop();
-	                        operand= stack.pop();
-	                        stack.push(calculator.calculate(operand,operator,"/"));
-	                        retorno = retorno + "\n\t/\tDividir: pop, pop y push del resultado\t\t\t\t"+stack.peek();
-	                    	anterior = String.valueOf(stack.peek());//lo guardamos en la variable
-	                    }
-	                }
-	            }
+	        for(int a=0; a<operation.size();a++){
+	        	String anterior = " ";//sera util para guardar la segunda posicion
+	        	int contador = 0;//llevara la cuenta de las rondas
+				retorno = retorno +  "\n\n\n\tEntrada \tOperacion \t\t\t\t\t\tPila";
+				String operationToDo= (String) operation.get(a);
+				for (int i =0; i<operationToDo.length();i++){
+					String currentString=operationToDo.substring(i,i+1);
+					try {
+						int currentNumber = Integer.parseInt(currentString);
+						stack.push(currentNumber);
+						contador = contador + 1;
+						retorno=retorno + ("\n\t"+ String.valueOf(contador));
+						if(anterior==" "){//si solo hay un elemento
+							retorno = retorno + "\tpush Operando\t\t\t\t\t\t" + stack.peek();
+							anterior = String.valueOf(stack.peek());//lo guardamos en la variable
+						}
+						else{
+							retorno = retorno + "\tpush Operando\t\t\t\t\t\t" + anterior + "," + stack.peek();
+							anterior = " ";
+						}
+					}catch(NumberFormatException nfe){
+						if (!currentString.equals(" ")){
+							if (currentString.equals("+")){
+								operand=stack.pop();
+								operator= stack.pop();
+								stack.push(calculator.calculate(operand,operator,"+"));
+								retorno = retorno + "\n\t+\tSumar: pop, pop y push del resultado\t\t\t\t"+ stack.peek();
+								anterior = String.valueOf(stack.peek());//lo guardamos en la variable
+							}
+							else if (currentString.equals("*")){
+								operand=stack.pop();
+								operator=stack.pop();
+								stack.push(calculator.calculate(operand,operator,"*"));
+								retorno = retorno + "\n\t*\tMultiplicar: pop, pop y push del resultado\t\t\t\t" + stack.peek();
+								anterior = String.valueOf(stack.peek());//lo guardamos en la variable
+							}
+							else if (currentString.equals("-")){
+								operator=stack.pop();
+								operand= stack.pop();
+								stack.push(calculator.calculate(operand,operator,"-"));
+								retorno = retorno + "\n\t-\tRestar: pop, pop y push del resultado\t\t\t\t"+stack.peek();
+								anterior = String.valueOf(stack.peek());//lo guardamos en la variable
+							}
+							else if (currentString.equals("/")){
+								operator=stack.pop();
+								operand= stack.pop();
+								stack.push(calculator.calculate(operand,operator,"/"));
+								retorno = retorno + "\n\t/\tDividir: pop, pop y push del resultado\t\t\t\t"+stack.peek();
+								anterior = String.valueOf(stack.peek());//lo guardamos en la variable
+							}
+						}
+					}
+				}
+
 	        }
-	        mensaje.setText(retorno);
+			mensaje.setText(retorno);
+
+
 		}
 	}
 
